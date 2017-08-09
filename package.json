@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ci": "ts-node src/CITestServer"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.0.1",
+    "@types/express-graphql": "^0.0.33",
+    "@types/graphql": "^0.10.2",
     "@types/mocha": "^2.2.41",
     "@types/reflect-metadata": "^0.0.5",
     "chai": "^4.1.0",
@@ -22,6 +25,8 @@
   "dependencies": {
     "@types/node": "^8.0.15",
     "chai-properties": "51ulong/chai-properties",
+    "express": "^4.15.4",
+    "express-graphql": "^0.6.7",
     "graphql": "^0.10.5"
   }
 }
