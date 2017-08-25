@@ -6,16 +6,16 @@ const {expect} = chai
 chai.use(chaiProps)
 
 import 'reflect-metadata'
-import {allRegisteredTypes, registerFiled} from "../src/lib/types";
+import {allRegisteredTypes, registerField} from "../src/lib/types";
 
 class Car {
-  @registerFiled({})
+  @registerField({})
   engineName: string
 
-  @registerFiled({})
+  @registerField({})
   capacity: number
 
-  @registerFiled({arrayOf: 'String'})
+  @registerField({arrayOf: 'String'})
   owners: string[]
 
   constructor() {
@@ -43,7 +43,7 @@ describe('type can register with field', () => {
   it('array of primitive by generic', () => {
 
     class PrimitiveArrayByGeneric {
-      @registerFiled({arrayOf: 'Number'})
+      @registerField({arrayOf: 'Number'})
       field: Array<number>
     }
 
@@ -52,15 +52,15 @@ describe('type can register with field', () => {
     })
   })
 
-  it('array of primtive of withou assign arrayOf', () => {
+  it('array of primtive of withou assign parameterArrayOf', () => {
 
     try {
       class Test {
-        @registerFiled()
+        @registerField()
         array: number[]
       }
     } catch (e) {
-      expect(e.toString()).to.eq('Error: Array Type must specify arrayOf property')
+      expect(e.toString()).to.eq('Error: Array Type must specify parameterArrayOf property')
       return
     }
     chai.assert.fail()
