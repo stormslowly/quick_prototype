@@ -1,11 +1,12 @@
 import * as express from 'express'
 import * as graphQlHTTP from 'express-graphql'
-import {GraphQLList, GraphQLObjectType, GraphQLString, GraphQLSchema} from "graphql";
+import {GraphQLList, GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLFloat} from "graphql";
+import {registerField, allRegisteredTypes, allRegisteredTypesName} from "./lib/types";
 
 
 const app = express()
 
-const Car = new GraphQLObjectType({
+const carType = new GraphQLObjectType({
   name: 'Car',
   fields: {
     engineName: {type: GraphQLString},
@@ -14,9 +15,60 @@ const Car = new GraphQLObjectType({
 })
 
 
-const types = [
-  Car
-]
+class Car {
+  @registerField()
+  engineName: string;
+  @registerField({arrayOf: 'String'})
+  owners: string[];
+}
+
+
+const plainTypes = allRegisteredTypes()
+
+
+const stringToGraphqlSchema = {
+  Number: GraphQLFloat,
+  String: GraphQLString,
+}
+
+function toSchema(def) {
+
+  if (def.type === 'Array') {
+    return new GraphQLList(toSchema({type: def.arrayOf}))
+  }
+
+  if (stringToGraphqlSchema[def.type]) {
+    return stringToGraphqlSchema[def.type]
+  } else {
+    return stringToGraphqlSchema[def.type] = new GraphQLObjectType({
+      name: def.type, fields: toSchema(def.fieldsDefinition)
+    })
+  }
+}
+
+const types = allRegisteredTypesName().map(name => {
+  const definitionFields = plainTypes[name]
+
+  console.log(`${__filename}:52 de`, definitionFields);
+
+  const fields = {}
+  for (let fieldName in  definitionFields) {
+    const definition = definitionFields[fieldName];
+
+    console.log(`${__filename}:58 `, definition);
+    fields[fieldName] = {
+      type: toSchema(definition)
+    }
+  }
+
+
+  return new GraphQLObjectType({
+    name, fields
+  })
+});
+
+
+// const types = [carType]
 
 const schema = new GraphQLSchema({
   types,

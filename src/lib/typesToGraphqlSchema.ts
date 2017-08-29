@@ -50,9 +50,9 @@ const stringToGraphqlSchema = {
 }
 
 
-function mapTOSchema(fieldsDefinition){
+function mapTOSchema(fieldsDefinition) {
   const schema = {}
-  for(let [key,value] of fieldsDefinition){
+  for (let [key, value] of fieldsDefinition) {
     schema[key] = toSchema(value)
   }
 }
@@ -79,9 +79,9 @@ export function graphqlFrom(typesDefinitions: any[]): any {
       return {
         [fieldName]: toSchema(typeDefinition.fieldsDefinition[fieldName])
       }
-    })
+    });
 
-    const fields = {}
+    const fields = {};
     for (let field of fieldsArray) {
       Object.assign(fields, field)
     }
