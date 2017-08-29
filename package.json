@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "ci": "ts-node src/CITestServer"
+    "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'"
+
   },
   "keywords": [],
   "author": "",

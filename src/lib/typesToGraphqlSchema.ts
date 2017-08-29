@@ -49,47 +49,42 @@ const stringToGraphqlSchema = {
   String: GraphQLString,
 }
 
-
-function mapTOSchema(fieldsDefinition) {
-  const schema = {}
-  for (let [key, value] of fieldsDefinition) {
-    schema[key] = toSchema(value)
-  }
-}
-
-function toSchema(def) {
+function toSchema(def: { type: string, arrayOf?: string }) {
 
   if (def.type === 'Array') {
-    return new GraphQLList(toSchema(def.arrayOf))
+    return new GraphQLList(toSchema({type: def.arrayOf}))
   }
 
   if (stringToGraphqlSchema[def.type]) {
     return stringToGraphqlSchema[def.type]
   } else {
-    return stringToGraphqlSchema[def.type] = new GraphQLObjectType({
-      name: def.type, fields: toSchema(def.fieldsDefinition)
-    })
+    throw Error(`unknown type : ${def.type}  ${def.arrayOf}`)
   }
 }
 
-export function graphqlFrom(typesDefinitions: any[]): any {
+function putIntoStringToGraphqlSchema(name, newType) {
+  stringToGraphqlSchema[name] = newType
+}
 
-  return typesDefinitions.map((typeDefinition) => {
-    const fieldsArray = Object.keys(typeDefinition.fieldsDefinition).map(fieldName => {
-      return {
-        [fieldName]: toSchema(typeDefinition.fieldsDefinition[fieldName])
+export function graphqlFrom(typesDefinitions: { name: string, fieldsDefinition: any }[]): any {
+  return typesDefinitions.map(td => {
+    const name = td.name
+    const fields = {}
+    const definitionFields = td.fieldsDefinition
+
+    const newType = new GraphQLObjectType({
+      name, fields
+    })
+    putIntoStringToGraphqlSchema(name, newType)
+
+    for (let fieldName in  td.fieldsDefinition) {
+      const definition = definitionFields[fieldName];
+      fields[fieldName] = {
+        type: toSchema(definition)
       }
-    });
-
-    const fields = {};
-    for (let field of fieldsArray) {
-      Object.assign(fields, field)
     }
 
-    return new GraphQLObjectType({
-      name: typeDefinition.name,
-      fields
-    })
-
+    return newType
   })
+
 }

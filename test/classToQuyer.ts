@@ -50,6 +50,9 @@ describe('class method defination', () => {
       name,
       fieldsDefinition: allTypes[name]
     })))
+
+    console.log(`${__filename}:54 `, schema);
+
   })
 
 })
