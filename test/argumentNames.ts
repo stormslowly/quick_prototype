@@ -3,31 +3,41 @@ import {argumentNamesOfFunction} from "../src/lib/utils/index";
 
 const {expect} = chai
 
-describe('arguments name', () => {
+describe('class method arguments name', () => {
 
+  it('normal method', () => {
 
-  it('normal func', () => {
-    function func1(a, b, c) {
+    class test1 {
+      func1(a, b, c) {
+      }
     }
 
-    expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
+    expect(argumentNamesOfFunction(test1.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
-  it('normal func with default value', () => {
-    function func1(a = 0, b = true, c = {d: 1}) {
+  it('normal method with default value', () => {
+    class test2 {
+      func1(a = 0, b = true, c = {d: 1}) {
+      }
     }
 
-    expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
+    expect(argumentNamesOfFunction(test2.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
-  it('=> function', () => {
-    const func1 = (a, b, c) => ({})
+  it.skip('=> function', () => {
 
-    expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
+    class test3 {
+      func1 = (a, b, c) => ({})
+    }
+
+    console.log(`${__filename}:35 `, test3);
+
+
+    expect(argumentNamesOfFunction(test3.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
 
-  it('array with default value function', () => {
+  it.skip('array with default value function', () => {
 
     const func1 = (a = 1, b = true, c = {d: 1}) => ({})
 
@@ -36,9 +46,13 @@ describe('arguments name', () => {
 
   it('arrow function with deconstruct', () => {
 
-    const func1 = ({a}) => ({})
+    class methodWithDeconstruct {
+      func1({a}) {
+      }
+    }
 
-    expect(() => argumentNamesOfFunction(func1)).to.throw('Deconstruct Not Supported in Query')
+
+    expect(() => argumentNamesOfFunction(methodWithDeconstruct.prototype.func1)).to.throw('Deconstruct Not Supported in Query')
   })
 
 

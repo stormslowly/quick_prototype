@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import {isFunction} from "util";
+import {argumentNamesOfFunction} from "../utils/index";
 
 const registeredTypes = {
   Number: {type: 'Number'},
@@ -141,13 +142,17 @@ export function registerQuery(queryName?: string): MethodDecorator {
     checkParameters(proto, methodName, parameterTypes);
     checkReturnType(proto, methodName, returnType)
 
+    console.log(proto[methodName].toString())
+
+    const parammeterNames = argumentNamesOfFunction(proto[methodName])
+
     const ps = parameterTypes.map((pt, index) => {
       let arrayOf;
       if (pt.name === 'Array') {
         arrayOf = proto[parameterMetaKey(methodName, index)]
       }
       return {
-        type: pt.name, arrayOf
+        type: pt.name, arrayOf, identifier: parammeterNames[index]
       }
     })
 

@@ -6,19 +6,19 @@ const _ = require('lodash');
 export function argumentNamesOfFunction(func: Function): string[] {
   const maybe = (x) => (x || {});
 
-  const functionAsString = func.toString();
-  const tree = esprima.parse(functionAsString);
-
-  const isArrowExpression = (maybe(_.first(tree.body)).type == 'ExpressionStatement');
-  const params = isArrowExpression ?
-    maybe(maybe(_.first(tree.body)).expression).params
-    : maybe(_.first(tree.body)).params;
+  const functionAsString = `
+  class test {
+  ${func.toString()}
+  }
+  `
+  const programTree = esprima.parse(functionAsString);
+  const classDeclaration = programTree.body[0]
+  const classBody = classDeclaration.body
+  const params = classBody.body[0].value.params
 
   if (params.some(para => para.type === 'ObjectPattern')) {
     throw Error('Deconstruct Not Supported in Query')
   }
 
-  return params.map(p => {
-    return p.name || p.left && p.left.name
-  })
+  return params.map(p => p.name || p.left && p.left.name)
 };

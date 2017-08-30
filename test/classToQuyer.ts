@@ -40,9 +40,9 @@ describe('class method defination', () => {
         methodName: 'getCar',
         queryName: 'myGetCarQuery',
         parameters:
-          [{type: 'String'},
-            {type: 'TestCarQuery'},
-            {type: 'Array', arrayOf: 'Number'}],
+          [{type: 'String', identifier: 'name'},
+            {type: 'TestCarQuery', identifier: 'other'},
+            {type: 'Array', arrayOf: 'Number', identifier: 'numbers'}],
         returnType: {name: 'TestCarQuery'}
       },
       {
