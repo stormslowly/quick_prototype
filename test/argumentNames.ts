@@ -34,11 +34,11 @@ describe('arguments name', () => {
     expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
-  it('arrow function with  deconstruct', () => {
+  it('arrow function with deconstruct', () => {
 
     const func1 = ({a}) => ({})
 
-    expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
+    expect(() => argumentNamesOfFunction(func1)).to.throw('Deconstruct Not Supported in Query')
   })
 
 

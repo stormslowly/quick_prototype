@@ -35,7 +35,6 @@ describe('class method defination', () => {
 
   it('get methods definition', () => {
 
-    console.log(`${__filename}:38 `, allQueriesGroupByClass()['TestCarQuery']);
     expect((allQueriesGroupByClass()['TestCarQuery'])).to.have.properties([
       {
         methodName: 'getCar',

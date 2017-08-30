@@ -138,17 +138,8 @@ export function registerQuery(queryName?: string): MethodDecorator {
     const returnType = Reflect.getMetadata('design:returntype', proto, methodName)
     const parameterTypes = Reflect.getMetadata('design:paramtypes', proto, methodName)
 
-    console.log(`${__filename}:141 `, parameterTypes);
-
-
     checkParameters(proto, methodName, parameterTypes);
-
     checkReturnType(proto, methodName, returnType)
-
-
-    console.log(`${__filename}:149 `, proto[methodName]);
-
-
 
     const ps = parameterTypes.map((pt, index) => {
       let arrayOf;

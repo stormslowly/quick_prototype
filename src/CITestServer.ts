@@ -7,7 +7,7 @@ import {
   allRegisteredTypesName,
   allQueriesGroupByClass,
   registerQuery, returnTypeArrayOf
-} from "./lib/types";
+} from "./lib/types/types";
 import {graphqlFrom, stringToGraphqlType} from "./lib/typesToGraphqlSchema";
 
 
