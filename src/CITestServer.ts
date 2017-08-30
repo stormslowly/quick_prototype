@@ -1,8 +1,14 @@
 import * as express from 'express'
 import * as graphQlHTTP from 'express-graphql'
 import {GraphQLList, GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLFloat} from "graphql";
-import {registerField, allRegisteredTypes, allRegisteredTypesName} from "./lib/types";
-import {graphqlFrom} from "./lib/typesToGraphqlSchema";
+import {
+  registerField,
+  allRegisteredTypes,
+  allRegisteredTypesName,
+  allQueriesGroupByClass,
+  registerQuery, returnTypeArrayOf
+} from "./lib/types";
+import {graphqlFrom, stringToGraphqlType} from "./lib/typesToGraphqlSchema";
 
 
 const app = express()
@@ -21,12 +27,25 @@ class RefToCar {
 }
 
 
+class CarStore {
+
+  @registerQuery()
+  getACar(ncards: number = 1): Car {
+    return {engineName: 'v9', owners: ['pshu']}
+  }
+
+  @registerQuery()
+  @returnTypeArrayOf('Car')
+  getCars(nCars: number = 1): Car[] {
+    return new Array(nCars).fill({engineName: 'v9', owners: ['pshu']})
+  }
+}
+
+
 const plainTypes = allRegisteredTypes()
 
 const types = graphqlFrom(
   allRegisteredTypesName().map(name => {
-    console.log(`${__filename}:29 `, name);
-
     return {
       name, fieldsDefinition: plainTypes[name]
     }
@@ -34,24 +53,61 @@ const types = graphqlFrom(
 );
 
 
+const allQueriesDefinitionGroupByClass = allQueriesGroupByClass()
+
+function injectResolver(...objs: any[]) {
+
+  const fields = []
+
+  for (let obj of objs) {
+    console.log(`${__filename}:57 injectResolver`, obj.constructor.name);
+
+    const queryDefinitions = allQueriesDefinitionGroupByClass[obj.constructor.name]
+
+    if (queryDefinitions) {
+
+      const resolvers = queryDefinitions.map(qd => {
+
+        console.log(`${__filename}:71 `, qd.parameters);
+
+        return {
+          [qd.queryName]: {
+            type: stringToGraphqlType(qd.returnType),
+            args: {
+              nCars: {type: GraphQLFloat}
+            },
+            resolve: function (parent, param) {
+
+              console.log(`${__filename}:80 resolve`, param);
+              return obj[qd.methodName](1)
+            }
+          }
+        }
+      })
+
+      fields.push(...resolvers)
+
+    } else {
+      throw Error(`No Registered Method of class ${obj.constructor.name}`)
+    }
+  }
+
+  return fields.reduce((map, field) => {
+    Object.assign(map, field)
+    return map
+  }, {})
+}
+
+
+const queryFields = injectResolver(new CarStore())
+
+console.log(`${__filename}:88 qu`, queryFields);
+
 const schema = new GraphQLSchema({
   types,
   query: new GraphQLObjectType({
     name: 'RootQueryType',
-    fields: {
-      hello: {
-        type: types[0],
-        resolve() {
-          return {engineName: 'v8', owners: ['tj', 'subStack']};
-        }
-      },
-      world: {
-        type: new GraphQLList(types[0]),
-        resolve(count) {
-          return new Array(count).fill({engineName: 'v8', owners: ['tj', 'subStack']})
-        }
-      }
-    }
+    fields: queryFields
   })
 })
 

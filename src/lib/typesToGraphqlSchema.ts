@@ -6,48 +6,38 @@ import {
   GraphQLList,
   GraphQLFloat
 } from 'graphql';
+import {ITypeDef} from "./types";
 
-
-const Car = new GraphQLObjectType({
-  name: 'Car',
-  fields: {
-    engineName: {type: GraphQLString},
-    owners: {type: new GraphQLList(GraphQLString)}
-  }
-})
-
-
-const types = [
-  Car
-]
-
-const schema = new GraphQLSchema({
-
-  types,
-
-  query: new GraphQLObjectType({
-    name: 'RootQueryType',
-    fields: {
-      hello: {
-        type: types[0],
-        resolve() {
-          return 'world';
-        }
-      }
-    }
-  })
-});
-
-
-const type = schema.getType('RootQueryType') as GraphQLObjectType
-
-console.log(type.getFields())
-
-
-const stringToGraphqlSchema = {
+const mapStringToGraphqlType = {
   Number: GraphQLFloat,
   String: GraphQLString,
+
+};
+
+
+function getGrraphQltype(typeName: string) {
+  if (mapStringToGraphqlType[typeName]) {
+    return mapStringToGraphqlType[typeName]
+  } else {
+    throw Error(`unknown type ${typeName}`)
+  }
 }
+
+export function stringToGraphqlType(def: ITypeDef) {
+  let name = def.name
+  if (def.name === 'Array') {
+    name = def.arrayOf
+  }
+  const type = getGrraphQltype(name)
+
+  if (def.name === 'Array') {
+    return new GraphQLList(type)
+  } else {
+    return type
+  }
+
+}
+
 
 function toSchema(def: { type: string, arrayOf?: string }) {
 
@@ -55,15 +45,15 @@ function toSchema(def: { type: string, arrayOf?: string }) {
     return new GraphQLList(toSchema({type: def.arrayOf}))
   }
 
-  if (stringToGraphqlSchema[def.type]) {
-    return stringToGraphqlSchema[def.type]
+  if (mapStringToGraphqlType[def.type]) {
+    return mapStringToGraphqlType[def.type]
   } else {
     throw Error(`unknown type : ${def.type}  ${def.arrayOf}`)
   }
 }
 
 function putIntoStringToGraphqlSchema(name, newType) {
-  stringToGraphqlSchema[name] = newType
+  mapStringToGraphqlType[name] = newType
 }
 
 export function graphqlFrom(typesDefinitions: { name: string, fieldsDefinition: any }[]): any {

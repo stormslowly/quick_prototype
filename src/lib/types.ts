@@ -17,6 +17,11 @@ interface IFiledDesc {
   arrayOf?: String
 }
 
+export interface ITypeDef {
+  name: string,
+  arrayOf?: string
+}
+
 const typeNames = []
 
 const getTypeWithName = (typeName: string) => {
@@ -83,17 +88,26 @@ function parameterMetaKey(methodName: string, parameterIndex: number) {
   return `${methodName}_${parameterIndex}`
 }
 
-function returnTypeMetaKey(methodName: string) {
-  return `${methodName}_returntype}`
+function returnTypeArrayOfMetaKey(methodName: string) {
+  return `${methodName}_returnType_arrayOf}`
 }
 
 
-function checkReturnType(returnType: { name: string }) {
+function checkReturnType(proto, methodName, returnType: { name: string, arrayOf?: string }) {
   const allTypes = allRegisteredTypes()
 
-  if (!allTypes[returnType.name]) {
+  let name = returnType.name;
+
+
+  if (returnType.name === 'Array') {
+    const metaKey = returnTypeArrayOfMetaKey(methodName)
+    let arrayOf = proto[metaKey]
+    name = arrayOf
+  }
+
+  if (!allTypes[name]) {
     console.error('return type validate failed', returnType.name)
-    throw Error('return validate failed')
+    throw Error('returnType validate failed')
   }
 }
 
@@ -103,6 +117,15 @@ export function parameterArrayOf(type: string) {
     prototype[metaKey] = type
   }
 }
+
+
+export function returnTypeArrayOf(type: string) {
+  return function (prototype, method_name: string) {
+    const metaKey = returnTypeArrayOfMetaKey(method_name);
+    prototype[metaKey] = type
+  }
+}
+
 
 export function registerQuery(queryName?: string): MethodDecorator {
   return function (proto, methodName: string, properDesc: PropertyDescriptor) {
@@ -115,8 +138,17 @@ export function registerQuery(queryName?: string): MethodDecorator {
     const returnType = Reflect.getMetadata('design:returntype', proto, methodName)
     const parameterTypes = Reflect.getMetadata('design:paramtypes', proto, methodName)
 
+    console.log(`${__filename}:141 `, parameterTypes);
+
+
     checkParameters(proto, methodName, parameterTypes);
-    checkReturnType(returnType)
+
+    checkReturnType(proto, methodName, returnType)
+
+
+    console.log(`${__filename}:149 `, proto[methodName]);
+
+
 
     const ps = parameterTypes.map((pt, index) => {
       let arrayOf;
@@ -128,11 +160,19 @@ export function registerQuery(queryName?: string): MethodDecorator {
       }
     })
 
-    registeredQueries[className] = {
+    let queryDef = {
       methodName,
       queryName: queryName || methodName,
       parameters: ps,
-      returnType: {name: returnType.name}
+      returnType: {name: returnType.name, arrayOf: proto[returnTypeArrayOfMetaKey(methodName)]}
+    };
+
+    if (registeredQueries[className]) {
+
+      registeredQueries[className].push(queryDef
+      )
+    } else {
+      registeredQueries[className] = [queryDef]
     }
   }
 }
@@ -153,4 +193,4 @@ export const allRegisteredTypes = (): any => {
 }
 
 
-export const allQueries = (): any => registeredQueries
+export const allQueriesGroupByClass = (): any => registeredQueries

@@ -6,7 +6,6 @@
   "scripts": {
     "test": "mocha",
     "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'"
-
   },
   "keywords": [],
   "author": "",
@@ -27,6 +26,7 @@
   "dependencies": {
     "@types/node": "^8.0.15",
     "chai-properties": "51ulong/chai-properties",
+    "esprima": "^4.0.0",
     "express": "^4.15.4",
     "express-graphql": "^0.6.7",
     "graphql": "^0.10.5"
