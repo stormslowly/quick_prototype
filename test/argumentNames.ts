@@ -30,9 +30,6 @@ describe('class method arguments name', () => {
       func1 = (a, b, c) => ({})
     }
 
-    console.log(`${__filename}:35 `, test3);
-
-
     expect(argumentNamesOfFunction(test3.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
 

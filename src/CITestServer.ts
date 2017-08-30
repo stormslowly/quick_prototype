@@ -30,7 +30,7 @@ class RefToCar {
 class CarStore {
 
   @registerQuery()
-  getACar(ncards: number = 1): Car {
+  getACar(): Car {
     return {engineName: 'v9', owners: ['pshu']}
   }
 
@@ -60,26 +60,29 @@ function injectResolver(...objs: any[]) {
   const fields = []
 
   for (let obj of objs) {
-    console.log(`${__filename}:57 injectResolver`, obj.constructor.name);
-
     const queryDefinitions = allQueriesDefinitionGroupByClass[obj.constructor.name]
 
     if (queryDefinitions) {
-
       const resolvers = queryDefinitions.map(qd => {
-
-        console.log(`${__filename}:71 `, qd.parameters);
+        const targetMethod = obj[qd.methodName]
+        const args = qd.parameters.map(param => {
+          return {
+            [param.identifier]: {
+              type: stringToGraphqlType({...param, name: param.type})
+            }
+          }
+        }).reduce((a, arg) => {
+          Object.assign(a, arg)
+          return a
+        }, {})
 
         return {
           [qd.queryName]: {
             type: stringToGraphqlType(qd.returnType),
-            args: {
-              nCars: {type: GraphQLFloat}
-            },
+            args,
             resolve: function (parent, param) {
-
-              console.log(`${__filename}:80 resolve`, param);
-              return obj[qd.methodName](1)
+              const args = qd.parameters.map(({identifier}) => param[identifier])
+              return targetMethod.apply(obj, args)
             }
           }
         }
@@ -100,8 +103,6 @@ function injectResolver(...objs: any[]) {
 
 
 const queryFields = injectResolver(new CarStore())
-
-console.log(`${__filename}:88 qu`, queryFields);
 
 const schema = new GraphQLSchema({
   types,

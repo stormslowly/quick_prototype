@@ -142,9 +142,7 @@ export function registerQuery(queryName?: string): MethodDecorator {
     checkParameters(proto, methodName, parameterTypes);
     checkReturnType(proto, methodName, returnType)
 
-    console.log(proto[methodName].toString())
-
-    const parammeterNames = argumentNamesOfFunction(proto[methodName])
+    const parameterNames = argumentNamesOfFunction(proto[methodName])
 
     const ps = parameterTypes.map((pt, index) => {
       let arrayOf;
@@ -152,7 +150,7 @@ export function registerQuery(queryName?: string): MethodDecorator {
         arrayOf = proto[parameterMetaKey(methodName, index)]
       }
       return {
-        type: pt.name, arrayOf, identifier: parammeterNames[index]
+        type: pt.name, arrayOf, identifier: parameterNames[index]
       }
     })
 
@@ -179,14 +177,7 @@ export function allRegisteredTypesName() {
 
 
 export const allRegisteredTypes = (): any => {
-
-
   return registeredTypes
-
-  // return typeNames.map((name) => {
-  //   return registeredTypes[name];
-  // })
 }
-
 
 export const allQueriesGroupByClass = (): any => registeredQueries

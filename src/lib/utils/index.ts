@@ -4,8 +4,6 @@ const _ = require('lodash');
 // ref https://stackoverflow.com/a/32108558
 
 export function argumentNamesOfFunction(func: Function): string[] {
-  const maybe = (x) => (x || {});
-
   const functionAsString = `
   class test {
   ${func.toString()}
@@ -21,4 +19,4 @@ export function argumentNamesOfFunction(func: Function): string[] {
   }
 
   return params.map(p => p.name || p.left && p.left.name)
-};
+}
