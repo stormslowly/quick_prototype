@@ -37,7 +37,7 @@ class CarStore {
   @registerQuery()
   @returnTypeArrayOf('Car')
   getCars(nCars: number = 1): Car[] {
-    return new Array(nCars).fill({engineName: 'v9', owners: ['pshu']})
+    return new Array(nCars).fill({engineName: `v9-${nCars}`, owners: ['pshu']})
   }
 }
 
