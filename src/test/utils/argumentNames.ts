@@ -1,5 +1,5 @@
 import * as chai from 'chai'
-import {argumentNamesOfFunction} from "../src/lib/utils/index";
+import {argumentNamesOfFunction} from "../../lib/utils/index";
 
 const {expect} = chai
 

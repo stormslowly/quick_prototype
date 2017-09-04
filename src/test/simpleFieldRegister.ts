@@ -6,26 +6,29 @@ const {expect} = chai
 chai.use(chaiProps)
 
 import 'reflect-metadata'
-import {allRegisteredTypes, registerField} from "../src/lib/types";
-
-class Car {
-  @registerField({})
-  engineName: string
-
-  @registerField({})
-  capacity: number
-
-  @registerField({arrayOf: 'String'})
-  owners: string[]
-
-  constructor() {
-    this.engineName = 'testModel'
-    this.capacity = 100
-  }
-}
+import {allRegisteredTypes, registerField} from "../lib/types";
 
 
 describe('type can register with field', () => {
+
+  before(() => {
+    class Car {
+      @registerField({})
+      engineName: string
+
+      @registerField({})
+      capacity: number
+
+      @registerField({arrayOf: 'String'})
+      owners: string[]
+
+      constructor() {
+        this.engineName = 'testModel'
+        this.capacity = 100
+      }
+    }
+  })
+
   it('simple field', () => {
     expect(allRegisteredTypes().Car).to.have.properties({
       engineName: {type: 'String'},
