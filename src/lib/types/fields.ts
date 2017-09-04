@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 interface IFiledDesc {
   name?: string;
   required?: boolean;

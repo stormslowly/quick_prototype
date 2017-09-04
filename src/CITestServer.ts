@@ -8,7 +8,7 @@ import {
   allQueriesGroupByClass,
   registerQuery, returnTypeArrayOf
 } from "./lib/types";
-import {graphqlFrom, stringToGraphqlType} from "./lib/typesToGraphqlSchema";
+import {graphqlFrom, injectResolver, stringToGraphqlType} from "./lib/typesToGraphqlSchema";
 
 
 const app = express()
@@ -41,77 +41,7 @@ class CarStore {
   }
 }
 
-
-const plainTypes = allRegisteredTypes()
-
-const types = graphqlFrom(
-  allRegisteredTypesName().map(name => {
-    return {
-      name, fieldsDefinition: plainTypes[name]
-    }
-  })
-);
-
-
-const allQueriesDefinitionGroupByClass = allQueriesGroupByClass()
-
-function injectResolver(...objs: any[]) {
-
-  const fields = []
-
-  for (let obj of objs) {
-    const queryDefinitions = allQueriesDefinitionGroupByClass[obj.constructor.name]
-
-    if (queryDefinitions) {
-      const resolvers = queryDefinitions.map(qd => {
-        const targetMethod = obj[qd.methodName]
-        const args = qd.parameters.map(param => {
-          return {
-            [param.identifier]: {
-              type: stringToGraphqlType({...param, name: param.type})
-            }
-          }
-        }).reduce((a, arg) => {
-          Object.assign(a, arg)
-          return a
-        }, {})
-
-        return {
-          [qd.queryName]: {
-            type: stringToGraphqlType(qd.returnType),
-            args,
-            resolve: function (parent, param) {
-              const args = qd.parameters.map(({identifier}) => param[identifier])
-              return targetMethod.apply(obj, args)
-            }
-          }
-        }
-      })
-
-      fields.push(...resolvers)
-
-    } else {
-      throw Error(`No Registered Method of class ${obj.constructor.name}`)
-    }
-  }
-
-  return fields.reduce((map, field) => {
-    Object.assign(map, field)
-    return map
-  }, {})
-}
-
-
-const queryFields = injectResolver(new CarStore())
-
-const schema = new GraphQLSchema({
-  types,
-  query: new GraphQLObjectType({
-    name: 'RootQueryType',
-    fields: queryFields
-  })
-})
-
+const schema = injectResolver(new CarStore())
 
 app.use('/graphql', graphQlHTTP({
   schema,

@@ -3,7 +3,7 @@ import {argumentNamesOfFunction} from "../utils/index";
 import {checkParameters, parameterMetaKey} from "./parameters";
 import {checkReturnType, returnTypeArrayOfMetaKey} from "./returnType";
 
-const registeredQueries = {};
+const registeredQueriesByClass = {};
 
 export function registerQuery(queryName?: string): MethodDecorator {
   return function (proto, methodName: string, properDesc: PropertyDescriptor) {
@@ -38,14 +38,14 @@ export function registerQuery(queryName?: string): MethodDecorator {
       returnType: {name: returnType.name, arrayOf: proto[returnTypeArrayOfMetaKey(methodName)]}
     };
 
-    if (registeredQueries[className]) {
+    if (registeredQueriesByClass[className]) {
 
-      registeredQueries[className].push(queryDef
+      registeredQueriesByClass[className].push(queryDef
       )
     } else {
-      registeredQueries[className] = [queryDef]
+      registeredQueriesByClass[className] = [queryDef]
     }
   }
 }
 
-export const allQueriesGroupByClass = (): any => registeredQueries
+export const allQueriesGroupByClass = (): any => registeredQueriesByClass
