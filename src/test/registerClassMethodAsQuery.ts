@@ -53,18 +53,4 @@ describe('class method defination', () => {
       }
     ])
   })
-
-
-  it('types to graphql schema', () => {
-
-    const allTypesNames = allRegisteredTypesName()
-    const allTypes = allRegisteredTypes()
-
-    const schema = graphqlFrom(allTypesNames.map(name => ({
-      name,
-      fieldsDefinition: allTypes[name]
-    })))
-
-  })
-
 })

@@ -41,7 +41,7 @@ describe('class method arguments name', () => {
     expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
-  it('arrow function with deconstruct', () => {
+  it('arrow function with deConstruct', () => {
 
     class methodWithDeconstruct {
       func1({a}) {
