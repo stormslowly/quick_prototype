@@ -3,8 +3,8 @@ import * as chaiProps from 'chai-properties'
 import {
   registerField, allRegisteredTypes, registerQuery, parameterArrayOf, allQueriesGroupByClass,
   allRegisteredTypesName, returnTypeArrayOf
-} from "../src/lib/types";
-import {graphqlFrom} from "../src/lib/typesToGraphqlSchema";
+} from "../lib/types";
+import {graphqlFrom} from "../lib/typesToGraphqlSchema";
 
 const {expect} = chai
 
@@ -53,18 +53,4 @@ describe('class method defination', () => {
       }
     ])
   })
-
-
-  it('types to graphql schema', () => {
-
-    const allTypesNames = allRegisteredTypesName()
-    const allTypes = allRegisteredTypes()
-
-    const schema = graphqlFrom(allTypesNames.map(name => ({
-      name,
-      fieldsDefinition: allTypes[name]
-    })))
-
-  })
-
 })

@@ -1,5 +1,5 @@
 import * as chai from 'chai'
-import {argumentNamesOfFunction} from "../src/lib/utils/index";
+import {argumentNamesOfFunction} from "../../lib/utils/index";
 
 const {expect} = chai
 
@@ -41,7 +41,7 @@ describe('class method arguments name', () => {
     expect(argumentNamesOfFunction(func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
-  it('arrow function with deconstruct', () => {
+  it('arrow function with deConstruct', () => {
 
     class methodWithDeconstruct {
       func1({a}) {

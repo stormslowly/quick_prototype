@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha src/test --opts src/test/mocha.opts",
     "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'"
   },
   "keywords": [],
@@ -13,7 +13,6 @@
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/express-graphql": "^0.0.33",
-    "@types/graphql": "^0.10.2",
     "@types/mocha": "^2.2.41",
     "@types/reflect-metadata": "^0.0.5",
     "chai": "^4.1.0",
