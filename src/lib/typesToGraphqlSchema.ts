@@ -4,6 +4,7 @@ import {
   GraphQLList,
   GraphQLFloat,
   GraphQLSchema,
+  GraphQLBoolean,
 } from 'graphql';
 import {ITypeDef} from "./types";
 import {allQueriesGroupByClass} from "./types/query";
@@ -12,7 +13,7 @@ import {allRegisteredTypes, allRegisteredTypesName} from "./types/fields";
 const mapStringToGraphqlType = {
   Number: GraphQLFloat,
   String: GraphQLString,
-
+  Boolean: GraphQLBoolean
 };
 
 

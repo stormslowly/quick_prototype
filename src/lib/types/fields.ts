@@ -11,7 +11,7 @@ const typeNames = []
 const registeredTypes = {
   Number: {type: 'Number'},
   String: {type: 'String'},
-  Boolean: {type: 'Number'},
+  Boolean: {type: 'Boolean'},
 }
 
 

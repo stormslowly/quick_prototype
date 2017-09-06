@@ -6,6 +6,7 @@ export function returnTypeArrayOfMetaKey(methodName: string) {
 
 export function checkReturnType(proto, methodName, returnType: { name: string, arrayOf?: string }) {
   const allTypes = allRegisteredTypes()
+
   let name = returnType.name;
 
   if (returnType.name === 'Array') {
@@ -15,7 +16,7 @@ export function checkReturnType(proto, methodName, returnType: { name: string, a
   }
 
   if (!allTypes[name]) {
-    console.error('return type validate failed', returnType.name)
+    console.error('return type validate failed of method', methodName, returnType.name)
     throw Error('returnType validate failed')
   }
 }
