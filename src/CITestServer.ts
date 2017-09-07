@@ -9,6 +9,7 @@ import {
   registerQuery, returnTypeArrayOf
 } from "./lib/types";
 import {graphqlFrom, injectResolver, stringToGraphqlType} from "./lib/typesToGraphqlSchema";
+import {registerMutation} from "./lib/types/query";
 
 
 const app = express()
@@ -39,6 +40,11 @@ class CarStore {
   getCars(nCars: number = 1): Car[] {
     return new Array(nCars).fill({engineName: `v9-${nCars}`, owners: ['pshu']})
   }
+
+  @registerMutation()
+  createCar(name: string): Car {
+    return {engineName: name, owners: []}
+  }
 }
 
 const schema = injectResolver(new CarStore())
@@ -49,4 +55,6 @@ app.use('/graphql', graphQlHTTP({
 }))
 
 
-app.listen(9002)
+app.listen(9002, () => {
+  console.log('working on ', 9002)
+})

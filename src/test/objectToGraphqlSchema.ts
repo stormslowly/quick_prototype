@@ -3,7 +3,7 @@ import * as chaiProps from 'chai-properties'
 import {graphql} from 'graphql';
 
 import {registerField} from "../lib/types/fields";
-import {registerQuery} from "../lib/types/query";
+import {registerMutation, registerQuery} from "../lib/types/query";
 import {returnTypeArrayOf} from "../lib/types/returnType";
 import {injectResolver} from "../lib/typesToGraphqlSchema";
 
@@ -42,6 +42,14 @@ describe('graphql query', () => {
     getAllTodos(): ToDo[] {
       return this.todos
     }
+
+
+    @registerMutation()
+    createNewTask(title: string): boolean {
+      this.todos.push({title, done: false})
+      return true
+    }
+
   }
 
 
@@ -53,23 +61,36 @@ describe('graphql query', () => {
 
   })
 
+  context('Query', () => {
 
-  it('query getNthTodo', () => {
 
-    return graphql(schema, `{myFirstTodo: getNthTodo(index:0){title,done}}`)
-      .then((data) => {
-        expect(data).to.have.properties({
-          data: {myFirstTodo: {title: `Task #1`}}
+    it('query getNthTodo', () => {
+
+      return graphql(schema, `{myFirstTodo: getNthTodo(index:0){title,done}}`)
+        .then((data) => {
+          expect(data).to.have.properties({
+            data: {myFirstTodo: {title: `Task #1`}}
+          })
         })
-      })
+    })
+
+    it('query arrays', () => {
+
+      return graphql(schema, `{allTodos: getAllTodos{title}}`)
+        .then(({data}) => {
+          expect(data.allTodos).to.have.length(2)
+        })
+    })
   })
 
-  it('query arrays', () => {
+  context('Mutation', () => {
 
-    return graphql(schema, `{allTodos: getAllTodos{title}}`)
-      .then(({data}) => {
-        expect(data.allTodos).to.have.length(2)
-      })
+    it('mutation', () => {
+
+      return graphql(schema, `mutation{ createNewTask(title:"test") }`)
+        .then(({data}) => {
+           expect(data).to.have.properties({createNewTask:true})
+        })
+    })
   })
-
 })

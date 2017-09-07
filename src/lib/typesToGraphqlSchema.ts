@@ -7,7 +7,7 @@ import {
   GraphQLBoolean,
 } from 'graphql';
 import {ITypeDef} from "./types";
-import {allQueriesGroupByClass} from "./types/query";
+import {allMutationsGroupByClass, allQueriesGroupByClass} from "./types/query";
 import {allRegisteredTypes, allRegisteredTypesName} from "./types/fields";
 
 const mapStringToGraphqlType = {
@@ -84,7 +84,6 @@ export function graphqlFrom(typesDefinitions: { name: string, fieldsDefinition: 
 
 export function injectResolver(...objs: any[]) {
 
-  const fields = []
   const plainTypes = allRegisteredTypes()
   const types = graphqlFrom(
     allRegisteredTypesName().map(name => {
@@ -94,55 +93,61 @@ export function injectResolver(...objs: any[]) {
     })
   );
 
+  let getQuerisFeilds = function (allQueriesDefinitionGroupByClass) {
+    const fields = []
+    for (let obj of objs) {
+      const queryDefinitions = allQueriesDefinitionGroupByClass[obj.constructor.name]
 
-  const allQueriesDefinitionGroupByClass = allQueriesGroupByClass()
+      if (queryDefinitions) {
+        const resolvers = queryDefinitions.map(qd => {
+          const targetMethod = obj[qd.methodName]
+          const args = qd.parameters.map(param => {
+            return {
+              [param.identifier]: {
+                type: stringToGraphqlType({...param, name: param.type})
+              }
+            }
+          }).reduce((a, arg) => {
+            Object.assign(a, arg)
+            return a
+          }, {})
 
-  for (let obj of objs) {
-    const queryDefinitions = allQueriesDefinitionGroupByClass[obj.constructor.name]
-
-    if (queryDefinitions) {
-      const resolvers = queryDefinitions.map(qd => {
-        const targetMethod = obj[qd.methodName]
-        const args = qd.parameters.map(param => {
           return {
-            [param.identifier]: {
-              type: stringToGraphqlType({...param, name: param.type})
+            [qd.queryName || qd.mutationName]: {
+              type: stringToGraphqlType(qd.returnType),
+              args,
+              resolve: function (parent, param) {
+                const args = qd.parameters.map(({identifier}) => param[identifier])
+                return targetMethod.apply(obj, args)
+              }
             }
           }
-        }).reduce((a, arg) => {
-          Object.assign(a, arg)
-          return a
-        }, {})
+        })
 
-        return {
-          [qd.queryName]: {
-            type: stringToGraphqlType(qd.returnType),
-            args,
-            resolve: function (parent, param) {
-              const args = qd.parameters.map(({identifier}) => param[identifier])
-              return targetMethod.apply(obj, args)
-            }
-          }
-        }
-      })
+        fields.push(...resolvers)
 
-      fields.push(...resolvers)
-
-    } else {
-      throw Error(`No Registered Method of class ${obj.constructor.name}`)
+      } else {
+        throw Error(`No Registered Method of class ${obj.constructor.name}`)
+      }
     }
-  }
+    return fields.reduce((map, field) => {
+      Object.assign(map, field)
+      return map
+    }, {})
+  };
+  const queryFields = getQuerisFeilds(allQueriesGroupByClass());
 
-  const queryFields = fields.reduce((map, field) => {
-    Object.assign(map, field)
-    return map
-  }, {})
+  const mutationFields = getQuerisFeilds(allMutationsGroupByClass());
 
   return new GraphQLSchema({
     types,
     query: new GraphQLObjectType({
       name: 'RootQueryType',
       fields: queryFields
+    }),
+    mutation: new GraphQLObjectType({
+      name: 'RootMutationType',
+      fields: mutationFields
     })
   })
 }
