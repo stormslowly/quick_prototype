@@ -49,13 +49,12 @@ describe('graphql query', () => {
   let schema
   before(() => {
     schema = injectResolver(new Project(2))
-
   })
 
   context('Query', () => {
     it('query getNthTodo', () => {
       return graphql(schema, `{myFirstTodo: getNthTodo(index:0){title,done}}`)
-        .then((data) => {
+        .then(data => {
           expect(data).to.have.properties({
             data: {myFirstTodo: {title: `Task #1`}}
           })

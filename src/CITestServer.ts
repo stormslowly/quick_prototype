@@ -27,7 +27,6 @@ class RefToCar {
   car: Car
 }
 
-
 class CarStore {
 
   @registerQuery()

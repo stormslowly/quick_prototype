@@ -19,6 +19,7 @@
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "reflect-metadata": "^0.1.10",
+    "ts-lint": "^4.5.1",
     "ts-node": "^3.2.1",
     "typescript": "^2.4.2"
   },
