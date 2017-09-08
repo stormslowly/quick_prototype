@@ -8,12 +8,9 @@ import {returnTypeArrayOf} from "../lib/types/returnType";
 import {injectResolver} from "../lib/typesToGraphqlSchema";
 
 const {expect} = chai
-
 chai.use(chaiProps)
 
 describe('graphql query', () => {
-
-
   class ToDo {
     @registerField()
     title: string
@@ -23,7 +20,6 @@ describe('graphql query', () => {
   }
 
   class Project {
-
     todos: ToDo[]
 
     constructor(nTodo: number) {
@@ -43,29 +39,21 @@ describe('graphql query', () => {
       return this.todos
     }
 
-
     @registerMutation()
     createNewTask(title: string): boolean {
       this.todos.push({title, done: false})
       return true
     }
-
   }
 
-
   let schema
-
-
   before(() => {
     schema = injectResolver(new Project(2))
 
   })
 
   context('Query', () => {
-
-
     it('query getNthTodo', () => {
-
       return graphql(schema, `{myFirstTodo: getNthTodo(index:0){title,done}}`)
         .then((data) => {
           expect(data).to.have.properties({
@@ -75,21 +63,18 @@ describe('graphql query', () => {
     })
 
     it('query arrays', () => {
-
       return graphql(schema, `{allTodos: getAllTodos{title}}`)
-        .then(({data}) => {
-          expect(data.allTodos).to.have.length(2)
+        .then(({data}: { data: any }) => {
+          expect(data['allTodos']).to.have.length(2)
         })
     })
   })
 
   context('Mutation', () => {
-
     it('mutation', () => {
-
       return graphql(schema, `mutation{ createNewTask(title:"test") }`)
         .then(({data}) => {
-           expect(data).to.have.properties({createNewTask:true})
+          expect(data).to.have.properties({createNewTask: true})
         })
     })
   })
