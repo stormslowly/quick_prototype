@@ -30,6 +30,11 @@ export function stringToGraphqlType(def: ITypeDef) {
   if (def.name === 'Array') {
     name = def.arrayOf
   }
+
+  if (def.name === 'Promise') {
+    name = def.promiseOf
+  }
+
   const type = getGraphqlType(name)
 
   if (def.name === 'Array') {

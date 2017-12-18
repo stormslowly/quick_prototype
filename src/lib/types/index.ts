@@ -1,7 +1,11 @@
-export interface ITypeDef {
-  name: string,
+interface NormalTypeDef {
+  name: string
   arrayOf?: string
+  promiseOf?: string
 }
+
+
+export type ITypeDef = NormalTypeDef
 
 export * from './fields'
 export * from './parameters'

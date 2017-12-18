@@ -1,7 +1,7 @@
 import {isFunction} from "util";
 import {argumentNamesOfFunction} from "../utils/index";
 import {checkParameters, parameterMetaKey} from "./parameters";
-import {checkReturnType, returnTypeArrayOfMetaKey} from "./returnType";
+import {checkReturnType, returnTypeArrayOfMetaKey, returnTypePromiseOfMetaKey} from "./returnType";
 
 const registeredQueriesByClass = {};
 const registeredMutationsByClass = {};
@@ -16,6 +16,8 @@ let getMethodDefinition = function (proto, methodName: string, properDesc: Prope
   const parameterTypes = Reflect.getMetadata('design:paramtypes', proto, methodName)
 
   checkParameters(proto, methodName, parameterTypes);
+
+  console.log(`${__filename}:20 getMethodDefinition`, methodName, returnType);
   checkReturnType(proto, methodName, returnType)
 
   const parameterNames = argumentNamesOfFunction(proto[methodName])
@@ -25,6 +27,7 @@ let getMethodDefinition = function (proto, methodName: string, properDesc: Prope
     if (pt.name === 'Array') {
       arrayOf = proto[parameterMetaKey(methodName, index)]
     }
+
     return {
       type: pt.name, arrayOf, identifier: parameterNames[index]
     }
@@ -33,7 +36,11 @@ let getMethodDefinition = function (proto, methodName: string, properDesc: Prope
   let methodDef = {
     methodName,
     parameters: ps,
-    returnType: {name: returnType.name, arrayOf: proto[returnTypeArrayOfMetaKey(methodName)]}
+    returnType: {
+      name: returnType.name,
+      arrayOf: proto[returnTypeArrayOfMetaKey(methodName)],
+      promiseOf: proto[returnTypePromiseOfMetaKey(methodName)]
+    }
   };
   return methodDef
 };
@@ -62,7 +69,7 @@ export function registerMutation(mutationName?: string) {
     const methodDef = getMethodDefinition(proto, methodName, properDesc);
     const queryDef = {...methodDef, mutationName: mutationName || methodName,};
     const className = proto.constructor.name;
-    
+
     if (registeredMutationsByClass[className]) {
       registeredMutationsByClass[className].push(queryDef)
     } else {

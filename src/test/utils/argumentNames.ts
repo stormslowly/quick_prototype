@@ -6,33 +6,31 @@ const {expect} = chai
 describe('class method arguments name', () => {
 
   it('normal method', () => {
-
-    class test1 {
+    class Test1 {
       func1(a, b, c) {
       }
     }
 
-    expect(argumentNamesOfFunction(test1.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
+    expect(argumentNamesOfFunction(Test1.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
   it('normal method with default value', () => {
-    class test2 {
+    class Test2 {
       func1(a = 0, b = true, c = {d: 1}) {
       }
     }
 
-    expect(argumentNamesOfFunction(test2.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
+    expect(argumentNamesOfFunction(Test2.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
 
   it.skip('=> function', () => {
 
-    class test3 {
+    class Test3 {
       func1 = (a, b, c) => ({})
     }
 
-    expect(argumentNamesOfFunction(test3.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
+    expect(argumentNamesOfFunction(Test3.prototype.func1)).to.deep.equal(['a', 'b', 'c'])
   })
-
 
   it.skip('array with default value function', () => {
 
@@ -42,15 +40,20 @@ describe('class method arguments name', () => {
   })
 
   it('arrow function with deConstruct', () => {
-
-    class methodWithDeconstruct {
+    class MethodWithDeconstruct {
       func1({a}) {
       }
     }
 
-
-    expect(() => argumentNamesOfFunction(methodWithDeconstruct.prototype.func1)).to.throw('Deconstruct Not Supported in Query')
+    expect(() => argumentNamesOfFunction(MethodWithDeconstruct.prototype.func1)).to.throw('Deconstruct Not Supported in Query')
   })
 
+  it('function with type', () => {
+    class MethodWithType {
+      func1(a: string) {
+      }
+    }
 
+    expect(argumentNamesOfFunction(MethodWithType.prototype.func1)).to.deep.equal(['a'])
+  })
 })
