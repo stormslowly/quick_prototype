@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha src/test --opts src/test/mocha.opts",
     "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "npm run test && npm run build"
   },
   "keywords": [],
   "author": "",
