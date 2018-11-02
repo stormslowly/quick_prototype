@@ -4,7 +4,6 @@ interface NormalTypeDef {
   promiseOf?: string
 }
 
-
 export type ITypeDef = NormalTypeDef
 
 export * from './fields'

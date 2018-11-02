@@ -1,31 +1,10 @@
 import * as express from 'express'
 import * as graphQlHTTP from 'express-graphql'
-import {GraphQLList, GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLFloat} from "graphql";
-import {
-  registerField,
-  allRegisteredTypes,
-  allRegisteredTypesName,
-  allQueriesGroupByClass,
-  registerQuery, returnTypeArrayOf, returnTypePromiseOf
-} from "./lib/types";
-import {graphqlFrom, injectResolver, stringToGraphqlType} from "./lib/typesToGraphqlSchema";
+import {registerField, registerQuery, returnTypeArrayOf, returnTypePromiseOf} from "./lib/types";
 import {registerMutation} from "./lib/types/query";
+import {injectResolver} from "./lib/typesToGraphqlSchema";
 
 const app = express()
-
-function entity<T extends { new(...args: any[]) }>(Entity: T) {
-
-  return class extends Entity {
-    static async findById(id: string): Promise<T> {
-      return {} as T
-    }
-
-    test() {
-      console.log('test')
-    }
-  }
-
-}
 
 class Car {
   @registerField()

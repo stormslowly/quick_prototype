@@ -1,11 +1,12 @@
 {
-  "name": "okieodie",
+  "name": "okiedokie",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha src/test --opts src/test/mocha.opts",
-    "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'"
+    "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,6 @@
     "esprima": "^4.0.0",
     "express": "^4.15.4",
     "express-graphql": "^0.6.7",
-    "graphql": "0.11.1"
+    "graphql": "14.0.2"
   }
 }

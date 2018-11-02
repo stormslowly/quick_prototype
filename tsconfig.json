@@ -10,6 +10,7 @@
       "typings",
       "./node_modules/@types/"
     ],
+    "declaration": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

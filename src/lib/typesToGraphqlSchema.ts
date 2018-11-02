@@ -1,14 +1,7 @@
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLFloat,
-  GraphQLSchema,
-  GraphQLBoolean,
-} from 'graphql';
+import {GraphQLBoolean, GraphQLFloat, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLString} from 'graphql';
 import {ITypeDef} from "./types";
-import {allMutationsGroupByClass, allQueriesGroupByClass} from "./types/query";
 import {allRegisteredTypes, allRegisteredTypesName} from "./types/fields";
+import {allMutationsGroupByClass, allQueriesGroupByClass} from "./types/query";
 
 const mapStringToGraphqlType = {
   Number: GraphQLFloat,
