@@ -1,0 +1,9 @@
+.idea
+src
+typings
+.gitignore
+.editorconfig
+tsconfig.json
+tslint.json
+dist/test
+dist/CITestServer.*

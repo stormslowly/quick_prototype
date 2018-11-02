@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 
-interface IFiledDesc {
+export interface IFiledDesc {
   name?: string;
   required?: boolean;
   type?: String
@@ -13,7 +13,6 @@ const registeredTypes = {
   String: {type: 'String'},
   Boolean: {type: 'Boolean'},
 }
-
 
 const getTypeWithName = (typeName: string) => {
   if (registeredTypes[typeName]) {
@@ -29,7 +28,6 @@ const getTypeWithName = (typeName: string) => {
 const registerToType = (typeName: string, desc: IFiledDesc) => {
   getTypeWithName(typeName)[desc.name] = desc
 }
-
 
 export const registerField = function (fieldDesc: IFiledDesc = {}) {
 

@@ -3,6 +3,10 @@ import {argumentNamesOfFunction} from "../utils/index";
 import {checkParameters, parameterMetaKey} from "./parameters";
 import {checkReturnType, returnTypeArrayOfMetaKey, returnTypePromiseOfMetaKey} from "./returnType";
 
+import * as debug from 'debug'
+
+const debugLog = debug(`okiedokie:${__filename}`)
+
 const registeredQueriesByClass = {};
 const registeredMutationsByClass = {};
 
@@ -17,7 +21,7 @@ let getMethodDefinition = function (proto, methodName: string, properDesc: Prope
 
   checkParameters(proto, methodName, parameterTypes);
 
-  console.log(`${__filename}:20 getMethodDefinition`, methodName, returnType);
+  debugLog(`${__filename}:20 getMethodDefinition`, methodName, returnType);
   checkReturnType(proto, methodName, returnType)
 
   const parameterNames = argumentNamesOfFunction(proto[methodName])
@@ -77,7 +81,6 @@ export function registerMutation(mutationName?: string) {
     }
   }
 }
-
 
 export const allQueriesGroupByClass = (): any => registeredQueriesByClass
 export const allMutationsGroupByClass = (): any => registeredMutationsByClass

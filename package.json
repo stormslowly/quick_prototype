@@ -1,8 +1,8 @@
 {
   "name": "okiedokie",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/lib/index.js",
   "scripts": {
     "test": "mocha src/test --opts src/test/mocha.opts",
     "ci": "nodemon --ext js,ts -x 'ts-node src/CITestServer'",
@@ -13,6 +13,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.0.1",
+    "@types/debug": "^0.0.31",
     "@types/express-graphql": "^0.0.33",
     "@types/mocha": "^2.2.41",
     "@types/reflect-metadata": "^0.0.5",
@@ -25,9 +26,9 @@
     "typescript": "2.6.2"
   },
   "dependencies": {
-    "@types/graphql": "0.11.1",
     "@types/node": "^8.0.15",
     "chai-properties": "51ulong/chai-properties",
+    "debug": "^4.1.0",
     "esprima": "^4.0.0",
     "express": "^4.15.4",
     "express-graphql": "^0.6.7",

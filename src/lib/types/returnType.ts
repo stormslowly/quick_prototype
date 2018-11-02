@@ -1,4 +1,7 @@
+import * as debug from 'debug'
 import {allRegisteredTypes} from "./fields";
+
+const debugLog = debug(`okiedokie:${__filename}`)
 
 export function returnTypeArrayOfMetaKey(methodName: string) {
   return `${methodName}_returnType_arrayOf}`
@@ -25,8 +28,7 @@ export function checkReturnType(proto, methodName, returnType: { name: string, a
     name = promiseOf
   }
 
-  console.log(`${__filename}:28 checkReturnType`, name);
-
+  debugLog(`${__filename}:28 checkReturnType`, name);
 
   if (!allTypes[name]) {
     console.error('return type validate failed of method', methodName, returnType.name)

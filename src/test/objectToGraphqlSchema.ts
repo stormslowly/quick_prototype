@@ -5,7 +5,7 @@ import {graphql} from 'graphql';
 import {registerField} from "../lib/types/fields";
 import {registerMutation, registerQuery} from "../lib/types/query";
 import {returnTypeArrayOf} from "../lib/types/returnType";
-import {injectResolver} from "../lib/typesToGraphqlSchema";
+import {makeExecutableSchemaFrom} from "../lib/typesToGraphqlSchema";
 
 const {expect} = chai
 chai.use(chaiProps)
@@ -48,7 +48,7 @@ describe('graphql query', () => {
 
   let schema
   before(() => {
-    schema = injectResolver(new Project(2))
+    schema = makeExecutableSchemaFrom(new Project(2))
   })
 
   context('Query', () => {

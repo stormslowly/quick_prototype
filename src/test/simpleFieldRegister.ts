@@ -1,13 +1,12 @@
 import * as chai from 'chai'
 import * as chaiProps from 'chai-properties'
+import {allRegisteredTypes, registerField} from "../lib/index";
+
+
 
 const {expect} = chai
 
 chai.use(chaiProps)
-
-import 'reflect-metadata'
-import {allRegisteredTypes, registerField} from "../lib/types";
-
 
 describe('type can register with field', () => {
 
@@ -47,7 +46,7 @@ describe('type can register with field', () => {
 
     class PrimitiveArrayByGeneric {
       @registerField({arrayOf: 'Number'})
-      field: Array<number>
+      field: number[]
     }
 
     expect(allRegisteredTypes().PrimitiveArrayByGeneric).to.have.properties({

@@ -1,8 +1,8 @@
 import * as express from 'express'
 import * as graphQlHTTP from 'express-graphql'
-import {registerField, registerQuery, returnTypeArrayOf, returnTypePromiseOf} from "./lib/types";
+import {parameterArrayOf, registerField, registerQuery, returnTypeArrayOf, returnTypePromiseOf} from "./lib/index";
 import {registerMutation} from "./lib/types/query";
-import {injectResolver} from "./lib/typesToGraphqlSchema";
+import {makeExecutableSchemaFrom} from "./lib/typesToGraphqlSchema";
 
 const app = express()
 
@@ -41,12 +41,14 @@ class CarStore {
   }
 
   @registerMutation()
-  createCar(name: string): Car {
-    return {engineName: name, owners: []}
+  createCar(name: string,
+            @parameterArrayOf('String')
+              owners: string[] = []): Car {
+    return {engineName: name, owners}
   }
 }
 
-const schema = injectResolver(new CarStore())
+const schema = makeExecutableSchemaFrom(new CarStore())
 
 app.use('/graphql', graphQlHTTP({
   schema,

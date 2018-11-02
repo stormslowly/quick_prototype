@@ -3,7 +3,7 @@ import * as chaiProps from 'chai-properties'
 import {
   registerField, allRegisteredTypes, registerQuery, parameterArrayOf, allQueriesGroupByClass,
   allRegisteredTypesName, returnTypeArrayOf
-} from "../lib/types";
+} from "../lib/index";
 import {graphqlFrom} from "../lib/typesToGraphqlSchema";
 import {allMutationsGroupByClass, registerMutation} from "../lib/types/query";
 

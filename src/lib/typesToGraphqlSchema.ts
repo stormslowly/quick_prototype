@@ -1,5 +1,5 @@
 import {GraphQLBoolean, GraphQLFloat, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLString} from 'graphql';
-import {ITypeDef} from "./types";
+import {ITypeDef} from "./index";
 import {allRegisteredTypes, allRegisteredTypesName} from "./types/fields";
 import {allMutationsGroupByClass, allQueriesGroupByClass} from "./types/query";
 
@@ -9,7 +9,6 @@ const mapStringToGraphqlType = {
   Boolean: GraphQLBoolean
 };
 
-
 function getGraphqlType(typeName: string) {
   if (mapStringToGraphqlType[typeName]) {
     return mapStringToGraphqlType[typeName]
@@ -18,7 +17,7 @@ function getGraphqlType(typeName: string) {
   }
 }
 
-export function stringToGraphqlType(def: ITypeDef) {
+function stringToGraphqlType(def: ITypeDef) {
   let name = def.name
   if (def.name === 'Array') {
     name = def.arrayOf
@@ -37,7 +36,6 @@ export function stringToGraphqlType(def: ITypeDef) {
   }
 
 }
-
 
 function toSchema(def: { type: string, arrayOf?: string }) {
 
@@ -79,8 +77,7 @@ export function graphqlFrom(typesDefinitions: { name: string, fieldsDefinition: 
 
 }
 
-
-export function injectResolver(...objs: any[]) {
+export function makeExecutableSchemaFrom(...objs: any[]) {
 
   const plainTypes = allRegisteredTypes()
   const types = graphqlFrom(
@@ -114,9 +111,9 @@ export function injectResolver(...objs: any[]) {
             [qd.queryName || qd.mutationName]: {
               type: stringToGraphqlType(qd.returnType),
               args,
-              resolve: function (parent, param) {
-                const args = qd.parameters.map(({identifier}) => param[identifier])
-                return targetMethod.apply(obj, args)
+              resolve(parent, param) {
+                const callArgs = qd.parameters.map(({identifier}) => param[identifier])
+                return targetMethod.apply(obj, callArgs)
               }
             }
           }

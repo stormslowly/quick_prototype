@@ -1,5 +1,7 @@
-okiedoie
+okiedokie
 ------
+
+# use at your own risk
 
 the name comes from the WAR III orc Peon quotes. It likes working so as this lib;
 
