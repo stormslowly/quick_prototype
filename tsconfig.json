@@ -5,6 +5,13 @@
     "noImplicitAny": false,
     "sourceMap": false,
     "outDir": "dist/",
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost",
+      "esnext.asynciterable"
+    ],
     "typeRoots": [
       "typings",
       "./node_modules/@types/"

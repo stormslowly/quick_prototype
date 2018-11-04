@@ -1,6 +1,6 @@
 import * as chai from 'chai'
 import * as chaiProps from 'chai-properties'
-import {graphql} from 'graphql';
+import {graphql, printSchema} from 'graphql';
 
 import {registerField} from "../lib/types/fields";
 import {registerMutation, registerQuery} from "../lib/types/query";
@@ -76,5 +76,53 @@ describe('graphql query', () => {
           expect(data).to.have.properties({createNewTask: true})
         })
     })
+  })
+})
+
+
+describe('bug', () => {
+
+
+  context('class only with query', () => {
+
+    class OnlyQuery {
+
+      @registerField()
+      name: string
+
+
+      @registerQuery()
+      getName(): string {
+        return "name"
+      }
+    }
+
+    class OnlyMutation {
+
+      @registerField()
+      name: string
+
+      @registerMutation()
+      getName(): string {
+        return "name"
+      }
+    }
+
+    it('make schema from OnlyQuery', () => {
+      expect(
+        () => {
+          makeExecutableSchemaFrom(new OnlyQuery())
+        }
+      ).does.not.throw()
+    })
+
+    it('make schema from OnlyMutation', () => {
+      expect(
+        () => {
+          makeExecutableSchemaFrom(new OnlyMutation())
+        }
+      ).does.not.throw()
+    })
+
   })
 })

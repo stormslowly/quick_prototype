@@ -2,6 +2,7 @@ import {GraphQLBoolean, GraphQLFloat, GraphQLList, GraphQLObjectType, GraphQLSch
 import {ITypeDef} from "./index";
 import {allRegisteredTypes, allRegisteredTypesName} from "./types/fields";
 import {allMutationsGroupByClass, allQueriesGroupByClass} from "./types/query";
+import chalk from 'chalk'
 
 const mapStringToGraphqlType = {
   Number: GraphQLFloat,
@@ -88,7 +89,7 @@ export function makeExecutableSchemaFrom(...objs: any[]) {
     })
   );
 
-  let getQuerisFeilds = function (allQueriesDefinitionGroupByClass) {
+  let getFieldsDefs = function (allQueriesDefinitionGroupByClass, category: 'Query' | 'Mutation' = "Query") {
     const fields = []
     for (let obj of objs) {
       const queryDefinitions = allQueriesDefinitionGroupByClass[obj.constructor.name]
@@ -122,7 +123,8 @@ export function makeExecutableSchemaFrom(...objs: any[]) {
         fields.push(...resolvers)
 
       } else {
-        throw Error(`No Registered Method of class ${obj.constructor.name}`)
+        console.error(chalk.gray(`No Registered ${category} Method of class ${obj.constructor.name}`))
+        // throw Error(`No Registered ${category} Method of class ${obj.constructor.name}`)
       }
     }
     return fields.reduce((map, field) => {
@@ -130,9 +132,9 @@ export function makeExecutableSchemaFrom(...objs: any[]) {
       return map
     }, {})
   };
-  const queryFields = getQuerisFeilds(allQueriesGroupByClass());
+  const queryFields = getFieldsDefs(allQueriesGroupByClass(), "Query");
 
-  const mutationFields = getQuerisFeilds(allMutationsGroupByClass());
+  const mutationFields = getFieldsDefs(allMutationsGroupByClass(), "Mutation");
 
   return new GraphQLSchema({
     types,
