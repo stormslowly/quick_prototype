@@ -2,6 +2,7 @@ export interface NormalTypeDef {
   name: string
   arrayOf?: string
   promiseOf?: string
+  promiseArrayOf: string
 }
 
 export type ITypeDef = NormalTypeDef

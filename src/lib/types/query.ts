@@ -1,7 +1,12 @@
 import {isFunction} from "util";
 import {argumentNamesOfFunction} from "../utils/index";
 import {checkParameters, parameterMetaKey} from "./parameters";
-import {checkReturnType, returnTypeArrayOfMetaKey, returnTypePromiseOfMetaKey} from "./returnType";
+import {
+  checkReturnType,
+  returnTypeArrayOfMetaKey,
+  returnTypePromiseOfArrayMetaKey,
+  returnTypePromiseOfMetaKey
+} from "./returnType";
 
 import * as debug from 'debug'
 
@@ -26,14 +31,14 @@ let getMethodDefinition = function (proto, methodName: string, properDesc: Prope
 
   const parameterNames = argumentNamesOfFunction(proto[methodName])
 
-  const ps = parameterTypes.map((pt, index) => {
+  const ps = parameterTypes.map((parameterType, index) => {
     let arrayOf;
-    if (pt.name === 'Array') {
+    if (parameterType.name === 'Array') {
       arrayOf = proto[parameterMetaKey(methodName, index)]
     }
 
     return {
-      type: pt.name, arrayOf, identifier: parameterNames[index]
+      type: parameterType.name, arrayOf, identifier: parameterNames[index]
     }
   })
 
@@ -43,7 +48,8 @@ let getMethodDefinition = function (proto, methodName: string, properDesc: Prope
     returnType: {
       name: returnType.name,
       arrayOf: proto[returnTypeArrayOfMetaKey(methodName)],
-      promiseOf: proto[returnTypePromiseOfMetaKey(methodName)]
+      promiseOf: proto[returnTypePromiseOfMetaKey(methodName)],
+      promiseArrayOf: proto[returnTypePromiseOfArrayMetaKey(methodName)]
     }
   };
   return methodDef

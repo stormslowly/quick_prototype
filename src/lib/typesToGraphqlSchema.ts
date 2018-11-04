@@ -25,12 +25,12 @@ function stringToGraphqlType(def: ITypeDef) {
   }
 
   if (def.name === 'Promise') {
-    name = def.promiseOf
+    name = def.promiseOf || def.promiseArrayOf
   }
 
   const type = getGraphqlType(name)
 
-  if (def.name === 'Array') {
+  if (def.name === 'Array' || def.promiseArrayOf) {
     return new GraphQLList(type)
   } else {
     return type

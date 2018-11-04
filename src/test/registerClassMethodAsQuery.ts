@@ -2,7 +2,7 @@ import * as chai from 'chai'
 import * as chaiProps from 'chai-properties'
 import {
   registerField, allRegisteredTypes, registerQuery, parameterArrayOf, allQueriesGroupByClass,
-  allRegisteredTypesName, returnTypeArrayOf
+  allRegisteredTypesName, returnTypeArrayOf, returnTypePromiseOfArray
 } from "../lib/index";
 import {graphqlFrom} from "../lib/typesToGraphqlSchema";
 
@@ -30,6 +30,13 @@ describe('class method defination', () => {
       getCars(): number[] {
         return [1]
       }
+
+      @registerQuery()
+      @returnTypePromiseOfArray('Number')
+      async asyncGetCars(): Promise<number[]> {
+        return [1]
+      }
+
     }
   })
 
@@ -50,7 +57,16 @@ describe('class method defination', () => {
         queryName: 'getCars',
         parameters: [],
         returnType: {name: 'Array', arrayOf: 'Number'}
+      },
+      {
+        methodName: 'asyncGetCars',
+        queryName: 'asyncGetCars',
+        parameters: [],
+        returnType: {name: 'Promise', promiseArrayOf:'Number'}
       }
+
     ])
   })
+
+
 })

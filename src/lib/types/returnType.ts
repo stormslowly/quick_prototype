@@ -11,6 +11,10 @@ export function returnTypePromiseOfMetaKey(methodName: string) {
   return `${methodName}_returnType_promiseOf}`
 }
 
+export function returnTypePromiseOfArrayMetaKey(methodName: string) {
+  return `${methodName}_returnType_promiseOfArray}`
+}
+
 export function checkReturnType(proto, methodName, returnType: { name: string, arrayOf?: string }) {
   const allTypes = allRegisteredTypes()
 
@@ -25,7 +29,13 @@ export function checkReturnType(proto, methodName, returnType: { name: string, a
   if (returnType.name === 'Promise') {
     const metaKey = returnTypePromiseOfMetaKey(methodName)
     let promiseOf = proto[metaKey]
-    name = promiseOf
+    if (promiseOf) {
+      name = promiseOf
+    } else {
+      const promiseArrayOf = proto[returnTypePromiseOfArrayMetaKey(methodName)]
+      if (promiseArrayOf)
+        name = promiseArrayOf
+    }
   }
 
   debugLog(`${__filename}:28 checkReturnType`, name);
@@ -46,6 +56,13 @@ export function returnTypeArrayOf(type: string) {
 export function returnTypePromiseOf(type: string) {
   return function (prototype, methodName: string) {
     const metaKey = returnTypePromiseOfMetaKey(methodName);
+    prototype[metaKey] = type
+  }
+}
+
+export function returnTypePromiseOfArray(type: string) {
+  return function (prototype, methodName: string) {
+    const metaKey = returnTypePromiseOfArrayMetaKey(methodName);
     prototype[metaKey] = type
   }
 }
