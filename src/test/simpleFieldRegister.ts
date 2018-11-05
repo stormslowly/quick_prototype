@@ -41,7 +41,6 @@ describe('type can register with field', () => {
     })
   })
 
-
   it('array of primitive by generic', () => {
 
     class PrimitiveArrayByGeneric {
@@ -67,6 +66,5 @@ describe('type can register with field', () => {
     }
     chai.assert.fail()
   });
-
 
 })

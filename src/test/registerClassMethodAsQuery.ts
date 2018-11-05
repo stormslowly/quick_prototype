@@ -1,8 +1,9 @@
 import * as chai from 'chai'
 import * as chaiProps from 'chai-properties'
+import {printSchema} from "graphql";
 import {
   registerField, allRegisteredTypes, registerQuery, parameterArrayOf, allQueriesGroupByClass,
-  allRegisteredTypesName, returnTypeArrayOf, returnTypePromiseOfArray
+  allRegisteredTypesName, returnTypeArrayOf, returnTypePromiseOfArray, makeExecutableSchemaFrom
 } from "../lib/index";
 import {graphqlFrom} from "../lib/typesToGraphqlSchema";
 
@@ -12,7 +13,6 @@ chai.use(chaiProps)
 
 
 describe('class method defination', () => {
-
 
   before(() => {
     class TestCarQuery {
@@ -36,7 +36,6 @@ describe('class method defination', () => {
       async asyncGetCars(): Promise<number[]> {
         return [1]
       }
-
     }
   })
 
@@ -62,11 +61,10 @@ describe('class method defination', () => {
         methodName: 'asyncGetCars',
         queryName: 'asyncGetCars',
         parameters: [],
-        returnType: {name: 'Promise', promiseArrayOf:'Number'}
+        returnType: {name: 'Promise', promiseArrayOf: 'Number'}
       }
 
     ])
   })
-
 
 })

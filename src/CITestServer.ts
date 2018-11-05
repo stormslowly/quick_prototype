@@ -1,6 +1,13 @@
 import * as express from 'express'
 import * as graphQlHTTP from 'express-graphql'
-import {parameterArrayOf, registerField, registerQuery, returnTypeArrayOf, returnTypePromiseOf} from "./lib/index";
+import {
+  parameterArrayOf,
+  registerField,
+  registerQuery,
+  returnTypeArrayOf,
+  returnTypePromiseOf,
+  returnTypePromiseOfArray
+} from "./lib/index";
 import {registerMutation} from "./lib/types/query";
 import {makeExecutableSchemaFrom} from "./lib/typesToGraphqlSchema";
 
@@ -46,6 +53,13 @@ class CarStore {
               owners: string[] = []): Car {
     return {engineName: name, owners}
   }
+
+  @registerQuery()
+  @returnTypePromiseOfArray('Car')
+  async allCars(): Promise<Car[]> {
+    return []
+  }
+
 }
 
 const schema = makeExecutableSchemaFrom(new CarStore())
